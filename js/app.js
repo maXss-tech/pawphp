@@ -1,6 +1,10 @@
 (function () {
   var $ = function (i) { return document.getElementById(i); };
-  var csrf = (document.querySelector('meta[name=csrf]') || {}).content || '';
+  function getCsrf() {
+  var m = document.querySelector('meta[name=csrf]');
+  var h = document.querySelector('input[name=csrf]');
+  return (m && m.content) || (h && h.value) || '';
+}
   var tools = document.querySelector('.tools');
   var np = $('notePanel'), up = $('userPanel'), bell = $('bell'), ub = $('userBtn');
 
@@ -60,14 +64,35 @@
     m.querySelector('p').textContent = t;
     log.appendChild(m); log.scrollTop = log.scrollHeight;
   }
+ var lastId = 0;
+  // set lastId from messages already on page
+  // (your history is rendered by PHP, so we start polling after that)
   window.send = function () {
-    var t = msg.value.trim(); if (!t) return;
-    add(t, true); msg.value = '';
-    var fd = new FormData(); fd.append('csrf', csrf); fd.append('message', t);
-    fetch('chat.php?action=send', { method: 'POST', body: fd, credentials: 'same-origin' })
+  var t = msg.value.trim(); if (!t) return;
+  add(t, true); msg.value = '';
+  var fd = new FormData();
+  fd.append('csrf', getCsrf());
+  fd.append('action', 'send');
+  fd.append('message', t);
+  fetch('support.php', { method: 'POST', body: fd, credentials: 'same-origin' })
+    .then(function (r) { if (!r.ok) throw new Error('bad'); return r.json(); })
+    .then(function (j) { if (!j.ok) throw new Error('bad'); })
+    .catch(function () { add('Connection problem. Please try again.', false); });
+};
+
+  // TRUE ADMIN: poll every 3 sec for real admin replies
+  setInterval(function () {
+    if (!log) return;
+    fetch('support.php?action=poll&last_id=' + lastId, { credentials: 'same-origin' })
       .then(function (r) { return r.json(); })
-      .then(function (j) { add(j.reply || 'Sorry, something went wrong.', false); })
-      .catch(function () { add('Connection problem. Please try again.', false); });
-  };
+      .then(function (rows) {
+        rows.forEach(function (row) {
+          if (row.sender === 'agent') {
+            add(row.message, false);
+          }
+          lastId = Math.max(lastId, parseInt(row.id, 10));
+        });
+      });
+  }, 3000);
   if (log && msg) msg.addEventListener('keydown', function (e) { if (e.key === 'Enter') window.send(); });
 })();

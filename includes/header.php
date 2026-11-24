@@ -25,10 +25,10 @@ $here = basename($_SERVER['SCRIPT_NAME']);
   <nav>
     <a href="index.php" class="<?= $here === 'index.php' ? 'on' : '' ?>">Home</a>
     <a href="about.php" class="<?= $here === 'about.php' ? 'on' : '' ?>">About Us</a>
-    <a href="chat.php" class="<?= $here === 'chat.php' ? 'on' : '' ?>">Contact</a>
+    <a href="support.php" class="<?= $here === 'support.php' ? 'on' : '' ?>">Contact</a>
   </nav>
   <div class="tools">
-    <a class="ib" href="chat.php" aria-label="Customer service chat"><svg viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2"><rect x="3" y="4" width="18" height="13" rx="3"/><path d="M8 21l2-4M8 9h8M8 12h5"/></svg></a>
+    <a class="ib" href="support.php" aria-label="Customer service support"><svg viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2"><rect x="3" y="4" width="18" height="13" rx="3"/><path d="M8 21l2-4M8 9h8M8 12h5"/></svg></a>
     <?php if ($u): ?>
     <button class="ib" id="bell" aria-label="Notifications, <?= $unread ?> unread" aria-expanded="false">
       <svg viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2"><path d="M6 17V11a6 6 0 0112 0v6l2 2H4zM10 21h4"/></svg>

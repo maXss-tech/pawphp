@@ -27,11 +27,23 @@ include 'includes/header.php';
       <h2 class="rv">Review Your Booking</h2>
       <p class="sub">Please check your details before confirming.</p>
       <div class="rg">
-        <div class="card">
-          <div class="room" role="img" aria-label="Hotel suite"></div>
-          <div class="cap"><span><?= e($d['dest']) ?></span><small><?= e($d['dest']) ?></small></div>
-          <div class="map"><span class="vm">📍 View Map</span><span>📍 <?= e($d['dest']) ?></span></div>
-        </div>
+
+        <div class="card" style="overflow:hidden;padding:0">
+  <div style="padding:14px 16px 10px">
+    <div style="font-size:18px;font-weight:700"><?= e(ucfirst($d['dest'])) ?></div>
+    <div style="font-size:13px;color:#888">📍 Vets near <?= e(ucfirst($d['dest'])) ?></div>
+  </div>
+  <iframe
+    title="Vets near <?= e($d['dest']) ?>"
+    src="https://maps.google.com/maps?q=<?= urlencode('vet clinic near ' . $d['dest']) ?>&z=14&output=embed"
+    style="width:100%;height:280px;border:0;display:block"
+    loading="lazy"
+    referrerpolicy="no-referrer-when-downgrade"></iframe>
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:#fff">
+    <span style="font-size:13px;color:#555">Tap a red pin to see vet details</span>
+    <a href="https://www.google.com/maps/search/<?= urlencode('vet clinic near ' . $d['dest']) ?>" target="_blank" rel="noopener" style="font-size:13px;font-weight:600;color:#2e4a2f;text-decoration:none">Open in Google Maps ↗</a>
+  </div>
+</div>      </div>
         <div class="card">
           <div class="facts">
             <div><b>Check-In</b><span><?= e(fdate($d['cin'])) ?></span><span class="mu">2:00 pm</span></div>
